@@ -7,6 +7,7 @@ const props = defineProps<{
     text?: string;
     href?: string;
     image?: string;
+    imageDarkMode?: string;
     rel?: string;
     target?: string;
   }[];
@@ -29,12 +30,19 @@ const columns = computed(
       :target="choice.target"
       :rel="choice.rel"
     >
-      <img
-        v-if="choice.image"
-        :src="choice.image"
-        :alt="choice.name"
-        class="choice-image"
-      />
+      <template v-if="choice.image">
+        <img
+          :src="choice.image"
+          :alt="choice.name"
+          :class="['choice-image', { 'light-only': choice.imageDarkMode }]"
+        />
+        <img
+          v-if="choice.imageDarkMode"
+          :src="choice.imageDarkMode"
+          :alt="choice.name"
+          class="choice-image dark-only"
+        />
+      </template>
       <div class="choice-content">
         <h3 class="choice-name">{{ choice.name }}</h3>
         <p v-if="choice.text" class="choice-text">{{ choice.text }}</p>
@@ -110,5 +118,13 @@ div.choice {
   .choices {
     grid-template-columns: 1fr;
   }
+}
+
+html.dark .light-only {
+  display: none !important;
+}
+
+html:not(.dark) .dark-only {
+  display: none !important;
 }
 </style>
